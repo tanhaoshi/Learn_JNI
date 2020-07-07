@@ -10,6 +10,9 @@ import android.widget.TextView;
  * 全文cmake list 学习途径
  *
  * 对cmake list 文件的一些用法解释，及常用的方式
+ *
+ * https://www.jianshu.com/p/39ca6c51bc20
+ *
  * https://blog.csdn.net/yongwn/article/details/97618948
  *
  * 对cmake list 文件的一些扩展功能方式的使用

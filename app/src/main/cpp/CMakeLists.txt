@@ -22,7 +22,7 @@ add_library( # Sets the name of the library.
         # Provides a relative path to your source file(s).
         native-lib.cpp)
 
-#新增构建脚本,这是构建我们自己的so文件 其路径是cmakelist.txt所在路径，其中TestLibInput.cpp是我自己创建的
+#这个是引入第三方的头文件 类似于.h或者.hpp的文件
 #include_directories(${CMAKE_SOURCE_DIR})
 #add_library(
 #        TestLib
@@ -46,7 +46,8 @@ find_library( # Sets the name of the path variable.
 # can link multiple libraries, such as libraries you define in this
 # build script, prebuilt third-party libraries, or system libraries.
 
-#源工程，即刚创建项目时自带的库
+#c++编译一般都是用gcc来编译的,c/c++编译时会产生.o文件,要通过make工具把这些.o文件链接起来
+#所以.so在编译的时候要把所有库连接起来才能编译。target_link_libraries就是干这个事情的.
 target_link_libraries( # Specifies the target library.
         native-lib
 
