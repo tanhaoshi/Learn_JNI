@@ -32,7 +32,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        // first 我应该做什么,首先第一步我应该去做什么，我既然我去使用了open cv 基于 tess-two的框架,我就必须去做些什么,首先，我先把tess-two的集成完毕把，
+        //目前已经把open cv 集成好了,目前要做的就是要去做，集成tess-two。
         // Example of a call to a native method
         TextView tv = findViewById(R.id.sample_text);
         tv.setText(stringFromJNI());
