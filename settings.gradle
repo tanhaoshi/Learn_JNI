@@ -1,2 +1,2 @@
-include ':app', ':opencv', ':idcardlibrary'
+include ':app', ':opencv', ':idcardlibrary', ':BankCardRecognition'
 rootProject.name='Learn_JNI'
