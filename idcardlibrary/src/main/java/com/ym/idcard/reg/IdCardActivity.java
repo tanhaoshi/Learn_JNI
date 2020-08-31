@@ -7,9 +7,11 @@ import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.BitmapRegionDecoder;
+import android.graphics.ImageFormat;
 import android.graphics.Matrix;
 import android.graphics.Point;
 import android.graphics.Rect;
+import android.graphics.YuvImage;
 import android.hardware.Camera;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -25,6 +27,7 @@ import com.ym.idcard.reg.layout.ViewfinderView;
 import com.ym.idcard.reg.permissions.EasyPermission;
 
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.List;
 
 public class IdCardActivity extends AppCompatActivity implements EasyPermission.PermissionCallback, ViewTreeObserver.OnGlobalLayoutListener {
@@ -40,6 +43,8 @@ public class IdCardActivity extends AppCompatActivity implements EasyPermission.
 
     private CameraHelper cameraHelper;
     private Integer rgbCameraId = Camera.CameraInfo.CAMERA_FACING_BACK;
+
+    OcrEngine ocrEngine;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,11 +63,8 @@ public class IdCardActivity extends AppCompatActivity implements EasyPermission.
 
         frameLayout = (FrameLayout)findViewById(R.id.frameLayout);
         surfaceView = (SurfaceView)findViewById(R.id.surfaceView);
-    }
 
-    @Override
-    protected void onStart() {
-        super.onStart();
+        ocrEngine = new OcrEngine();
     }
 
     @Override
@@ -117,7 +119,10 @@ public class IdCardActivity extends AppCompatActivity implements EasyPermission.
 
             @Override
             public void onPreview(byte[] nv21, Camera camera) {
-
+                    /*身份证扫描核心代码*/
+                //这里代码肯定会执行的很快 如何控制速度呢
+                IDCard idCard = ocrEngine.recognize(IdCardActivity.this, 2, saveCurrentPreView(nv21), null);
+                Log.d("hezd","idcard info:"+idCard.toString());
             }
 
             @Override
@@ -151,9 +156,27 @@ public class IdCardActivity extends AppCompatActivity implements EasyPermission.
         cameraHelper.start();
     }
 
+    private byte[] saveCurrentPreView(byte[] data){
+        Camera.Size previewSize = cameraHelper.previewSize;
+        BitmapFactory.Options newOpts = new BitmapFactory.Options();
+        newOpts.inJustDecodeBounds = true;
+        YuvImage yuvimage = new YuvImage(
+                data,
+                ImageFormat.NV21,
+                previewSize.width,
+                previewSize.height,
+                null);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        yuvimage.compressToJpeg(new Rect(0, 0, previewSize.width, previewSize.height), 100, baos);// 80--JPG图片的质量[0-100],100最高
+        byte[] rawImage = baos.toByteArray();
+        return rawImage;
+    }
+
+
     @Override
     public void onGlobalLayout() {
         surfaceView.getViewTreeObserver().removeOnGlobalLayoutListener(this);
         initCamera();
     }
+
 }

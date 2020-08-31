@@ -22,10 +22,10 @@ import java.util.List;
 public class CameraHelper implements Camera.PreviewCallback {
     private static final String TAG = "CameraHelper";
     private Camera mCamera;
-    private int mCameraId;
+    public int mCameraId;
     private Point previewViewSize;
     private View previewDisplayView;
-    private Camera.Size previewSize;
+    public Camera.Size previewSize;
     private Point specificPreviewSize;
     private int displayOrientation = 0;
     private int rotation;
