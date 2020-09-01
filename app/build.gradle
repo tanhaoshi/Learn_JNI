@@ -17,7 +17,7 @@ android {
         }
 
         ndk {
-            abiFilters("x86","x86_64","armeabi-v7a","arm64-v8a")
+            abiFilters("x86", "x86_64", "armeabi-v7a", "arm64-v8a")
         }
     }
     buildTypes {
@@ -48,5 +48,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
     implementation 'com.rmtheis:tess-two:9.1.0'
+    //glide 图片加载
+    implementation 'com.github.bumptech.glide:glide:3.7.0'
+    annotationProcessor 'com.github.bumptech.glide:compiler:4.11.0'
+
     implementation project(':opencv')
 }
