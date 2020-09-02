@@ -6,10 +6,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatImageView;
 
 import android.Manifest;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
@@ -19,6 +22,7 @@ import com.yizhitong.learnjni.permissions.EasyPermission;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
 
 public class FaceDetectActivity extends AppCompatActivity implements EasyPermission.PermissionCallback {
@@ -37,11 +41,12 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
     // 保存到本地图片 名称
     private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/id_card.jpg";
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_face_detect);
+
+        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
         mFaceDetectBody = new FaceDetectBody();
 
@@ -63,11 +68,16 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
     }
 
     private void startCV(){
+        String path = getAssetsCacheFile(this,"haarcascade_frontalface_alt2.xml");
+
+        Log.i("FaceDetectActivity","look at current path = " + path);
+
         String newFileName = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/dispose_id_card.jpg";
 
         File file = new File(IMAGE_PATH);
         if(file.exists()){
-            mFaceDetectBody.disposFaceDetect(IMAGE_PATH,newFileName);
+            mFaceDetectBody.disposFaceDetect(IMAGE_PATH,newFileName,path);
+
         }else{
             file.getParentFile().mkdirs();
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.idcard);
@@ -92,13 +102,40 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
                 bitmap.recycle();
             }
 
-            mFaceDetectBody.disposFaceDetect(IMAGE_PATH,newFileName);
+            mFaceDetectBody.disposFaceDetect(IMAGE_PATH,newFileName,path);
         }
 
         Glide.with(FaceDetectActivity.this).load(IMAGE_PATH).into(startIdCard);
 
         Glide.with(FaceDetectActivity.this).load(newFileName).into(disposeIdCard);
     }
+
+    public String getAssetsCacheFile(Context context, String fileName)   {
+        File cacheFile = new File(context.getCacheDir(), fileName);
+        try {
+            InputStream inputStream = context.getAssets().open(fileName);
+            try {
+                FileOutputStream outputStream = new FileOutputStream(cacheFile);
+                try {
+                    byte[] buf = new byte[1024];
+                    int len;
+                    while ((len = inputStream.read(buf)) > 0) {
+                        outputStream.write(buf, 0, len);
+                    }
+                } finally {
+                    outputStream.close();
+                }
+            } finally {
+                inputStream.close();
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return cacheFile.getAbsolutePath();
+    }
+
+
+
 
     @Override
     protected void onStart() {
@@ -108,7 +145,6 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
 
     @Override
     public void onPermissionGranted(int requestCode, List<String> perms) {
-        //打开成功!
         startCV();
     }
 
