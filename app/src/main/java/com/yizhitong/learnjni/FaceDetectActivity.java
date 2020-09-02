@@ -19,6 +19,7 @@ import com.bumptech.glide.Glide;
 import com.yizhitong.learnjni.facedetect.FaceDetectBody;
 import com.yizhitong.learnjni.permissions.EasyPermission;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -29,7 +30,7 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
 
     private FaceDetectBody mFaceDetectBody;
 
-    private AppCompatImageView startIdCard,disposeIdCard;
+    private AppCompatImageView startIdCard,disposeIdCard,idCardImage;
 
     private String[] permissions = new String[]{
             Manifest.permission.WRITE_EXTERNAL_STORAGE,
@@ -39,7 +40,7 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
     private final int REQUEST_PERMISSIONS = 2;
 
     // 保存到本地图片 名称
-    private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/id_card.jpg";
+    private static final String IMAGE_PATH = "/storage/emulated/0/Android/data/com.inj.ocr/cache/id_card.jpg";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +53,7 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
 
         startIdCard   = findViewById(R.id.startIdCard);
         disposeIdCard = findViewById(R.id.disposeIdCard);
-
+        idCardImage = findViewById(R.id.idCardImage);
     }
 
     private void requestPermission(){
@@ -72,12 +73,14 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
 
         Log.i("FaceDetectActivity","look at current path = " + path);
 
-        String newFileName = "/storage/emulated/0/Android/data/com.tomcat.ocr.idcard/cache/dispose_id_card.jpg";
+        String newFileName = "/storage/emulated/0/Android/data/com.inj.ocr/cache/dispose_id_card.jpg";
 
         File file = new File(IMAGE_PATH);
-        if(file.exists()){
-            mFaceDetectBody.disposFaceDetect(IMAGE_PATH,newFileName,path);
 
+        Bitmap headBitmap = null;
+
+        if(file.exists()){
+            headBitmap = mFaceDetectBody.disposeFaceDetect(IMAGE_PATH,newFileName,path);
         }else{
             file.getParentFile().mkdirs();
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(),R.drawable.idcard);
@@ -102,15 +105,26 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
                 bitmap.recycle();
             }
 
-            mFaceDetectBody.disposFaceDetect(IMAGE_PATH,newFileName,path);
+            headBitmap = mFaceDetectBody.disposeFaceDetect(IMAGE_PATH,newFileName,path);
         }
 
         Glide.with(FaceDetectActivity.this).load(IMAGE_PATH).into(startIdCard);
 
         Glide.with(FaceDetectActivity.this).load(newFileName).into(disposeIdCard);
+
+        if(headBitmap != null){
+            ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+            headBitmap.compress(Bitmap.CompressFormat.PNG, 100, baos);
+
+            byte[] bytes=baos.toByteArray();
+
+            Glide.with(FaceDetectActivity.this).load(bytes).into(idCardImage);
+        }
+
     }
 
-    public String getAssetsCacheFile(Context context, String fileName)   {
+    public String getAssetsCacheFile(Context context, String fileName){
         File cacheFile = new File(context.getCacheDir(), fileName);
         try {
             InputStream inputStream = context.getAssets().open(fileName);
@@ -133,9 +147,6 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
         }
         return cacheFile.getAbsolutePath();
     }
-
-
-
 
     @Override
     protected void onStart() {
