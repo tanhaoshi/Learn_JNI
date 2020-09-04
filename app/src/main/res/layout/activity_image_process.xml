@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.yizhitong.learnjni.ImageProcessActivity">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/startIdCard"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="200dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/resizeIdCard"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="200dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/grayIdCard"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="200dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/thresholdIdCard"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="200dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/erodeIdCard"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="300dp"
+            android:layout_height="200dp"/>
+
+        <androidx.appcompat.widget.AppCompatImageView
+            android:id="@+id/divisionIdCard"
+            android:layout_gravity="center_horizontal"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+</ScrollView>

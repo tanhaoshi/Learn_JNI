@@ -19,6 +19,8 @@ import com.bumptech.glide.Glide;
 import com.yizhitong.learnjni.facedetect.FaceDetectBody;
 import com.yizhitong.learnjni.permissions.EasyPermission;
 
+import org.opencv.android.Utils;
+
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -53,7 +55,7 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
 
         startIdCard   = findViewById(R.id.startIdCard);
         disposeIdCard = findViewById(R.id.disposeIdCard);
-        idCardImage = findViewById(R.id.idCardImage);
+        idCardImage   = findViewById(R.id.idCardImage);
     }
 
     private void requestPermission(){
@@ -121,7 +123,6 @@ public class FaceDetectActivity extends AppCompatActivity implements EasyPermiss
 
             Glide.with(FaceDetectActivity.this).load(bytes).into(idCardImage);
         }
-
     }
 
     public String getAssetsCacheFile(Context context, String fileName){
